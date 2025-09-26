@@ -1,102 +1,139 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>غيث هاب - المواصلات</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>غيث هاب - توصيل من الكرك إلى عمّان والعقبة</title>
   <style>
     body {
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
+      background: #f1f1f1;
       margin: 0;
       padding: 0;
-      background: #f5f5f5;
-      color: #333;
     }
+
     header {
-      background: #0077b6;
+      background: #007B8A;
       color: white;
-      padding: 15px;
-      text-align: center;
-    }
-    nav {
-      background: #023e8a;
-      padding: 10px;
-      text-align: center;
-    }
-    nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
- .container {
       padding: 20px;
-    }
-    .trip-card {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .trip-card h3 {
-      margin: 0;
-      color: #0077b6;
-    }
-    .trip-card p {
-      margin: 5px 0;
-    }
-    footer {
-      background: #0077b6;
-      color: white;
       text-align: center;
-      padding: 10px;
-      margin-top: 20px;
     }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    select, input[type="radio"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 20px;
+    }
+
+    button {
+      background: #007B8A;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .rides {
+      margin-top: 30px;
+    }
+
+    .ride-card {
+      background: #f9f9f9;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 <body>
 
   <header>
-    <h1>🚐 غيث هاب</h1>
- <p>تطبيق المواصلات بين الكرك، عمان، والعقبة</p>
+    <h1>غيث هاب - GhithHub</h1>
+    <p>توصيل أشخاص وأمانات بين الكرك، عمان، والعقبة</p>
   </header>
 
-  <nav>
-    <a href="#">الرئيسية</a>
-    <a href="#">الرحلات</a>
-    <a href="#">تواصل معنا</a>
-  </nav>
-
   <div class="container">
-    <h2>الرحلات المتاحة</h2>
+    <form id="rideForm">
+      <label>نوع التوصيل:</label>
+      <div class="radio-group">
+        <label><input type="radio" name="type" value="person" checked> شخص</label>
+        <label><input type="radio" name="type" value="package"> أمانة</label>
+      </div>
 
-    <div class="trip-card">
-      <h3>الكرك → عمان</h3>
-      <p>الوقت: 8:00 صباحًا</p>
-      <p>السعر: 5 د.أ</p>
-      <button>احجز الآن</button>
-    </div>
+      <label for="from">من المدينة:</label>
+      <select id="from">
+        <option value="الكرك">الكرك</option>
+        <option value="عمان">عمان</option>
+        <option value="العقبة">العقبة</option>
+      </select>
 
-    <div class="trip-card">
-      <h3>الكرك → العقبة</h3>
-      <p>الوقت: 2:00 ظهرًا</p>
-      <p>السعر: 7 د.أ</p>
-      <button>احجز الآن</button>
-    </div>
+      <label for="to">إلى المدينة:</label>
+      <select id="to">
+        <option value="عمان">عمان</option>
+        <option value="الكرك">الكرك</option>
+        <option value="العقبة">العقبة</option>
+      </select>
 
-    <div class="trip-card">
-      <h3>عمان → الكرك</h3>
-      <p>الوقت: 5:00 مساءً</p>
-      <p>السعر: 5 د.أ</p>
-      <button>احجز الآن</button>
+      <button type="submit">طلب توصيلة</button>
+    </form>
+
+    <div class="rides" id="ridesList">
+      <!-- سيتم عرض الطلب هنا -->
     </div>
   </div>
 
-  <footer>
-    <p>© 2025 غيث هاب - جميع الحقوق محفوظة</p>
-  </footer>
+  <script>
+    const form = document.getElementById('rideForm');
+    const ridesList = document.getElementById('ridesList');
 
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const from = document.getElementById('from').value;
+      const to = document.getElementById('to').value;
+
+      if (from === to) {
+        alert("لا يمكن اختيار نفس المدينة كنقطة انطلاق ووجهة.");
+        return;
+      }
+
+      const ride = document.createElement('div');
+      ride.className = 'ride-card';
+      ride.innerHTML = `
+        <strong>نوع التوصيل:</strong> ${type === 'person' ? 'شخص' : 'أمانة'}<br>
+        <strong>من:</strong> ${from}<br>
+        <strong>إلى:</strong> ${to}<br>
+        <em>تم إرسال الطلب بنجاح!</em>
+      `;
+
+      ridesList.prepend(ride);
+    });
+  </script>
 </body>
 </html>
-انقل الصفحه الرئيسية الى docs
