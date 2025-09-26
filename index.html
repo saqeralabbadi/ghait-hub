@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>توصيلة - توصيل عمان ↔ الكرك</title>
+  <title>غيث هاب - توصيل عمان ↔ الكرك</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -54,7 +54,7 @@
     .card h2{margin:0 0 10px;color:var(--accent)}
     label{display:block;margin:10px 0 6px;font-weight:600}
     .controls{display:flex;gap:10px}
-    select,input[type="date"],.input-text{
+    select,input[type="date"],.input-text, input[type="number"]{
       width:100%;
       padding:12px;
       border-radius:10px;
@@ -115,7 +115,7 @@
 
 <header>
   <h1>غيث هاب</h1>
-  <p>توصيل بين عمان والكرك - اختر منطقتك</p>
+  <p>توصيل عمان ↔ الكرك — اختر منطقتك وخيارات التوصيل</p>
 </header>
 
 <div class="wrap">
@@ -134,6 +134,12 @@
         <label><input type="radio" name="type" value="package"> أمانة</label>
       </div>
 
+      <label>نوع السيارة</label>
+      <div class="radio-group">
+        <label><input type="radio" name="carType" value="normal" checked> عادي</label>
+        <label><input type="radio" name="carType" value="ladies"> خاص للبنات</label>
+      </div>
+
       <div class="row" style="margin-top:8px">
         <div class="half">
           <label for="fromGov">من المحافظة</label>
@@ -145,7 +151,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" style="margin-top:10px">
         <div class="half">
           <label for="toGov">إلى المحافظة</label>
           <select id="toGov"></select>
@@ -159,8 +165,11 @@
       <label for="date">تاريخ الرحلة</label>
       <input type="date" id="date" required />
 
-      <label for="notes">عدد الركاب / وزن الأمانة (توضيحي)</label>
-      <input class="input-text" id="notes" placeholder="مثلاً: 2 ركاب أو 5 كغ" />
+      <label for="seats">عدد المقاعد المطلوبة</label>
+      <input type="number" id="seats" min="1" max="6" value="1" />
+
+      <label for="notes">ملاحظات إضافية (مثلاً: وزن الأمانة أو تفاصيل)</label>
+      <input class="input-text" id="notes" placeholder="مثلاً: 2 ركاب أو 5 كغ، أو طلب سيارة خاص للبنات" />
 
       <button class="btn" id="searchBtn" type="button">ابحث عن رحلات متاحة</button>
     </form>
@@ -238,9 +247,7 @@
 </div>
 
 <script>
-/* -------------------------
-   بيانات المحافظتين والمناطق الخاصة بهما مع إحداثيات تقريبية
-   ------------------------- */
+/* البيانات -- عمان و الكرك بالمناطق مع إحداثيات تقريبية */
 const GOVS = {
   "عمان": [
     {name:"وسط البلد", lat:31.9554, lng:35.9450},
@@ -249,28 +256,29 @@ const GOVS = {
     {name:"ماركا", lat:32.0000, lng:35.9633},
     {name:"الشميساني", lat:31.9458, lng:35.9008},
     {name:"أبو نصير", lat:32.0, lng:35.87},
-    {name:"الأضيع", lat:31.96, lng:35.90},
-    {name:"الراشدية", lat:32.0033, lng:35.9197}
-    // ... يمكنك إضافة المزيد من المناطق
+    {name:"الراشدية", lat:32.0033, lng:35.9197},
+    {name:"خريبة السوق", lat:31.95, lng:35.92}
+    // أضف المزيد إذا تريد
   ],
   "الكرك": [
     {name:"مدينة الكرك", lat:31.1839, lng:35.7019},
     {name:"يدين", lat:31.2100, lng:35.7400},
     {name:"قصر السلالمة", lat:31.2067, lng:35.6800},
-    {name:"نقل", lat:31.1400, lng:35.6300}
-    // ... يمكنك إضافة مناطق أخرى للكرك
+    {name:"نقل", lat:31.1400, lng:35.6300},
+    {name:"عين الباشا (جزء من البلقاء)" , lat:31.95, lng:35.78} // مثال إذا تحب مناطق خارجية
+    // أضف المزيد إذا تريد
   ]
 };
 
-/* رحلات وهمية مبسطة */
+/* رحلات وهمية */
 const FAKE_RIDES = [
-  {id:1, driver:"سائق أحمد", fromGov:"الكرك", fromLoc:"مدينة الكرك", toGov:"عمان", toLoc:"وسط البلد", date:offsetDate(1), time:"09:00", price:12, seats:3},
-  {id:2, driver:"سائق محمد", fromGov:"عمان", fromLoc:"الجبيهة", toGov:"الكرك", toLoc:"قصر السلالمة", date:offsetDate(2), time:"14:30", price:15, seats:2},
-  {id:3, driver:"سائقة ليلى", fromGov:"الكرك", fromLoc:"يدين", toGov:"عمان", toLoc:"عبدون", date:offsetDate(0), time:"11:00", price:13, seats:4},
-  {id:4, driver:"سائق كريم", fromGov:"عمان", fromLoc:"ماركا", toGov:"الكرك", toLoc:"نقل", date:offsetDate(3), time:"08:00", price:17, seats:3}
+  {id:1, driver:"سائق أحمد", fromGov:"الكرك", fromLoc:"مدينة الكرك", toGov:"عمان", toLoc:"وسط البلد", date:offsetDate(1), time:"09:00", price:14, seats:3, carType:"normal"},
+  {id:2, driver:"سائق محمد", fromGov:"عمان", fromLoc:"الجبيهة", toGov:"الكرك", toLoc:"قصر السلالمة", date:offsetDate(2), time:"14:30", price:18, seats:2, carType:"ladies"},
+  {id:3, driver:"سائقة ليلى", fromGov:"الكرك", fromLoc:"يدين", toGov:"عمان", toLoc:"عبدون", date:offsetDate(0), time:"11:00", price:16, seats:4, carType:"normal"},
+  {id:4, driver:"سائق كريم", fromGov:"عمان", fromLoc:"ماركا", toGov:"الكرك", toLoc:"نقل", date:offsetDate(3), time:"08:00", price:20, seats:3, carType:"ladies"}
 ];
 
-/* helper */
+/* مساعد لتنسيق التاريخ */
 function offsetDate(offsetDays){
   const d = new Date();
   d.setDate(d.getDate() + offsetDays);
@@ -278,17 +286,18 @@ function offsetDate(offsetDays){
   return `${y}-${m}-${day}`;
 }
 
-/* DOM refs */
+/* DOM العناصر */
 const fromGovSel = document.getElementById('fromGov');
 const fromLocSel = document.getElementById('fromLoc');
 const toGovSel = document.getElementById('toGov');
 const toLocSel = document.getElementById('toLoc');
 const dateInput = document.getElementById('date');
+const seatsInput = document.getElementById('seats');
 const searchBtn = document.getElementById('searchBtn');
 const availableRides = document.getElementById('availableRides');
 const recentRides = document.getElementById('recentRides');
 
-/* auth refs */
+/* auth عناصر */
 const openAuthBtn = document.getElementById('openAuthBtn');
 const modalBackdrop = document.getElementById('modalBackdrop');
 const closeModal = document.getElementById('closeModal');
@@ -313,11 +322,9 @@ function populateLoc(selGov, selLoc){
   selLoc.innerHTML = areas.map(a=>`<option value="${a.name}">${a.name}</option>`).join('');
 }
 
-/* عند تغيير المحافظة يتم تغيير المناطق */
 fromGovSel.addEventListener('change', ()=> { populateLoc(fromGovSel, fromLocSel); });
 toGovSel.addEventListener('change', ()=> { populateLoc(toGovSel, toLocSel); });
 
-/* تهيئة أولية */
 document.addEventListener('DOMContentLoaded', ()=>{
   populateGovs();
   populateLoc(fromGovSel, fromLocSel);
@@ -326,7 +333,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderRecent();
 });
 
-/* auth بسيطة كما في الكود السابق */
+/* auth محلي */
 const STORAGE_USERS = 'ghith_users';
 const STORAGE_SESSION = 'ghith_session';
 
@@ -385,13 +392,13 @@ doLogin.addEventListener('click', ()=>{
   modalBackdrop.style.display='none';
 });
 
-/* عرض الرحلات الأخيرة */
+/* عرض رحلات سابقة */
 function renderRecent(){
   recentRides.innerHTML = FAKE_RIDES.slice(0,4).map(r=>{
     return `<div class="ride">
       <div class="info">
-        <b>${r.fromGov} → ${r.toGov}</b>
-        <small>${r.fromLoc} → ${r.toLoc} — ${r.date} الساعة ${r.time}</small>
+        <b>${r.fromGov} (${r.fromLoc}) → ${r.toGov} (${r.toLoc})</b>
+        <small>${r.driver} • ${r.date} • ${r.time}</small>
       </div>
       <div class="meta">
         <div class="pill">${r.price} د.أ</div>
@@ -401,25 +408,29 @@ function renderRecent(){
   }).join('');
 }
 
-/* البحث عن رحلات متاحة بناءً على المحافظة والمنطقة والتاريخ */
+/* البحث مع فلترة تشمل carType وعدد المقاعد */
 searchBtn.addEventListener('click', ()=>{
   const fromGov = fromGovSel.value;
   const fromLoc = fromLocSel.value;
   const toGov = toGovSel.value;
   const toLoc = toLocSel.value;
   const date = dateInput.value;
+  const seatsReq = Number(seatsInput.value) || 1;
+  const carTypeReq = document.querySelector('input[name="carType"]:checked').value;
 
   if(fromGov === toGov && fromLoc === toLoc){
     alert('اختار محافظة ومنطقة مختلفة للانطلاق والوجهة');
     return;
   }
-  const results = FAKE_RIDES.filter(r=>
-    r.fromGov === fromGov &&
-    r.fromLoc === fromLoc &&
-    r.toGov === toGov &&
-    r.toLoc === toLoc &&
-    r.date === date
-  );
+  const results = FAKE_RIDES.filter(r=>{
+    return r.fromGov === fromGov &&
+           r.fromLoc === fromLoc &&
+           r.toGov === toGov &&
+           r.toLoc === toLoc &&
+           r.date === date &&
+           r.seats >= seatsReq &&
+           (carTypeReq === 'normal' || (carTypeReq === 'ladies' && r.carType === 'ladies'))
+  });
   renderAvailable(results);
   setRouteOnMap(fromGov, fromLoc, toGov, toLoc);
 });
@@ -430,15 +441,16 @@ function renderAvailable(arr){
     return;
   }
   availableRides.innerHTML = arr.map(r=>{
+    const carTypeLabel = r.carType === 'ladies' ? 'خاص للبنات' : 'عادي';
     return `<div class="ride" data-id="${r.id}">
       <div class="info">
         <b>${r.fromGov} (${r.fromLoc}) → ${r.toGov} (${r.toLoc})</b>
-        <small>${r.driver} • ${r.date} • ${r.time}</small>
+        <small>${r.driver} • ${r.date} • ${r.time} • نوع السيارة: ${carTypeLabel}</small>
       </div>
       <div class="meta">
         <div class="pill">${r.price} د.أ</div>
         <div style="margin-top:8px">
-          <button class="btn secondary bookBtn" data-id="${r.id}">احجز</button>
+          <button class="btn secondary bookBtn" data-id="${r.id}">احجز (${r.seats} مقاعد متاحة)</button>
         </div>
       </div>
     </div>`;
@@ -465,10 +477,10 @@ function handleBooking(rideId){
   const bookings = JSON.parse(localStorage.getItem('ghith_bookings')||'[]');
   bookings.push({rideId, userId:user.id, when: new Date().toISOString(), ride});
   localStorage.setItem('ghith_bookings', JSON.stringify(bookings));
-  alert(`تم حجز الرحلة مع ${ride.driver} بتاريخ ${ride.date} الساعة ${ride.time}`);
+  alert(`تم حجز الرحلة مع ${ride.driver} بتاريخ ${ride.date} الساعة ${ride.time} — نوع السيارة: ${ride.carType === 'ladies' ? 'خاص للبنات' : 'عادي'}`);
 }
 
-/* خريطة Google Maps */
+/* خريطة */
 let map, markers=[], polyline;
 function initMap(){
   map = new google.maps.Map(document.getElementById('map'), {
@@ -507,7 +519,6 @@ function setRouteOnMap(fromGov, fromLoc, toGov, toLoc){
 }
 
 </script>
-
 <script async
   src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
 
