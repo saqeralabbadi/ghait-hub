@@ -9,49 +9,77 @@
       font-family: Tahoma, Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f5f5f5;
+      background-color: #f0f0f0; /* رمادي فاتح */
       color: #333;
     }
+
     header {
-      background: #0077b6;
+      background-color: #003366; /* كحلي */
       color: white;
-      padding: 15px;
+      padding: 20px;
       text-align: center;
     }
+
     nav {
-      background: #023e8a;
+      background-color: #002244; /* كحلي غامق */
       padding: 10px;
       text-align: center;
     }
+
     nav a {
-      color: white;
+ color: white;
       margin: 0 15px;
       text-decoration: none;
       font-weight: bold;
     }
- .container {
+
+    .container {
       padding: 20px;
     }
+
     .trip-card {
-      background: white;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      background-color: #003366; /* كحلي */
+      color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
     }
+
+    .trip-card:hover {
+      transform: scale(1.02);
+    }
+
     .trip-card h3 {
-      margin: 0;
-      color: #0077b6;
+      margin-top: 0;
+      font-size: 1.4em;
     }
+
     .trip-card p {
-      margin: 5px 0;
+      margin: 8px 0;
+      font-size: 1em;
     }
+    .trip-card button {
+      background-color: white;
+      color: #003366;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .trip-card button:hover {
+      background-color: #e0e0e0;
+    }
+
     footer {
-      background: #0077b6;
+      background-color: #003366;
       color: white;
       text-align: center;
-      padding: 10px;
-      margin-top: 20px;
+      padding: 15px;
+      margin-top: 30px;
     }
   </style>
 </head>
@@ -59,45 +87,4 @@
 
   <header>
     <h1>🚐 غيث هاب</h1>
- <p>تطبيق المواصلات بين الكرك، عمان، والعقبة</p>
-  </header>
-
-  <nav>
-    <a href="#">الرئيسية</a>
-    <a href="#">الرحلات</a>
-    <a href="#">تواصل معنا</a>
-  </nav>
-
-  <div class="container">
-    <h2>الرحلات المتاحة</h2>
-
-    <div class="trip-card">
-      <h3>الكرك → عمان</h3>
-      <p>الوقت: 8:00 صباحًا</p>
-      <p>السعر: 5 د.أ</p>
-      <button>احجز الآن</button>
-    </div>
-
-    <div class="trip-card">
-      <h3>الكرك → العقبة</h3>
-      <p>الوقت: 2:00 ظهرًا</p>
-      <p>السعر: 7 د.أ</p>
-      <button>احجز الآن</button>
-    </div>
-
-    <div class="trip-card">
-      <h3>عمان → الكرك</h3>
-      <p>الوقت: 5:00 مساءً</p>
-      <p>السعر: 5 د.أ</p>
-      <button>احجز الآن</button>
-    </div>
-  </div>
-
-  <footer>
-    <p>© 2025 غيث هاب - جميع الحقوق محفوظة</p>
-  </footer>
-
-</body>
-</html>
-
-اضافه الصفحه ارئيسية 
+    <p>تطبيق المواصلات بين الكرك، عمان، وال
