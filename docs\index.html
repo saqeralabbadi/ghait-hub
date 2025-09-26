@@ -1,156 +1,528 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>توصيل  - توصيل من الكرك إلى عمّان والعقبة</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>توصيلة - توصيل عمان ↔ الكرك</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: #f1f1f1;
-      margin: 0;
-      padding: 0;
+    :root{
+      --primary-1:#007b8a;
+      --primary-2:#00bcd4;
+      --bg1:linear-gradient(135deg,#e8fbff 0%, #ffffff 60%);
+      --card-bg: rgba(255,255,255,0.85);
+      --glass: rgba(255,255,255,0.7);
+      --accent:#004d4d;
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family: 'Cairo', sans-serif;
+      margin:0;
+      background:var(--bg1);
+      -webkit-font-smoothing:antialiased;
+      color:#073033;
     }
 
-    header {
-      background: #007B8A;
-      color: white;
-      padding: 20px;
-      text-align: center;
+    header{
+      background: linear-gradient(90deg,var(--primary-1),var(--primary-2));
+      color:white;
+      padding:28px 16px;
+      text-align:center;
+      border-bottom-left-radius:18px;
+      border-bottom-right-radius:18px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.12);
+    }
+    header h1{margin:0;font-size:1.9rem}
+    header p{margin:6px 0 0;opacity:0.95}
+
+    .wrap{
+      max-width:900px;
+      margin:28px auto;
+      padding:18px;
+      display:grid;
+      grid-template-columns: 450px 1fr;
+      gap:24px;
     }
 
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .card{
+      background:var(--card-bg);
+      padding:22px;
+      border-radius:14px;
+      box-shadow:0 8px 22px rgba(3,20,20,0.07);
+      border:1px solid rgba(0,0,0,0.04);
+    }
+    .card h2{margin:0 0 10px;color:var(--accent)}
+    label{display:block;margin:10px 0 6px;font-weight:600}
+    .controls{display:flex;gap:10px}
+    select,input[type="date"],.input-text, input[type="number"]{
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid #d9e9e9;
+      background:#fbffff;
+      font-size:1rem;
+      color:#044;
+    }
+    .row{display:flex;gap:10px}
+    .row .half{flex:1}
+
+    .radio-group{display:flex;gap:14px;align-items:center;margin-top:6px}
+    .radio-group label{font-weight:500}
+
+    .btn{
+      display:inline-block;
+      background:linear-gradient(90deg,var(--primary-1),var(--primary-2));
+      color:#fff;border:none;padding:12px 16px;border-radius:12px;font-weight:700;
+      cursor:pointer;width:100%;margin-top:12px;box-shadow:0 6px 18px rgba(0,0,0,0.12)
+    }
+    .btn.secondary{background:#fff;color:var(--primary-1);border:1px solid rgba(0,0,0,0.06);}
+
+    .map-wrap{
+      height:320px;border-radius:12px;overflow:hidden;border:1px solid rgba(0,0,0,0.06);
+      box-shadow:0 8px 22px rgba(0,0,0,0.06);
+      background:linear-gradient(180deg,#f7ffff,#ffffff);
     }
 
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
+    #map{width:100%;height:100%}
 
-    select, input[type="radio"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      font-size: 1rem;
+    .rides-list{margin-top:16px}
+    .ride{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:12px;border-radius:10px;background:#ffffff;border:1px solid #eef7f7;margin-bottom:12px;
+      box-shadow:0 4px 12px rgba(2,50,50,0.03)
     }
+    .ride .info{max-width:72%}
+    .ride .info b{color:var(--primary-1)}
+    .ride small{display:block;color:#456;opacity:0.85;margin-top:6px}
+    .ride .meta{text-align:center}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(0,188,212,0.12);color:var(--primary-2);font-weight:700}
 
-    .radio-group {
-      display: flex;
-      gap: 20px;
+    .modal-backdrop{position:fixed;inset:0;background:rgba(3,20,20,0.45);display:none;align-items:center;justify-content:center;z-index:1200}
+    .modal{width:360px;background:var(--glass);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.6)}
+    .modal h3{margin:0 0 10px}
+    .modal .field{margin:8px 0}
+    .small{font-size:0.88rem;color:#034;opacity:0.8}
+
+    footer{text-align:center;padding:22px 10px;color:#075;opacity:0.8}
+
+    @media (max-width:980px){
+      .wrap{grid-template-columns:1fr; padding:12px}
+      .map-wrap{height:260px}
     }
-
-    button {
-      background: #007B8A;
-      color: white;
-      border: none;
-      padding: 12px;
-      width: 100%;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .rides {
-      margin-top: 30px;
-    }
-
-    .ride-card {
-      background: #f9f9f9;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      margin-bottom: 10px;
-    }
-
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>غيث هاب - GhithHub</h1>
-    <p>توصيل أشخاص وأمانات بين الكرك، عمان، والعقبة</p>
-  </header>
+<header>
+  <h1>غيث هاب</h1>
+  <p>توصيل عمان ↔ الكرك — اختر منطقتك وخيارات التوصيل</p>
+</header>
 
-  <div class="container">
+<div class="wrap">
+  <div class="card" id="mainCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h2>اطلب توصيلة</h2>
+      <div>
+        <button class="btn secondary" id="openAuthBtn">تسجيل / تسجيل دخول</button>
+      </div>
+    </div>
+
     <form id="rideForm">
-      <label>نوع التوصيل:</label>
+      <label>نوع التوصيل</label>
       <div class="radio-group">
         <label><input type="radio" name="type" value="person" checked> شخص</label>
         <label><input type="radio" name="type" value="package"> أمانة</label>
       </div>
 
-     <select id="from">
-  <option value="عمان">عمان</option>
-  <option value="الزرقاء">الزرقاء</option>
-  <option value="إربد">إربد</option>
-  <option value="البلقاء">البلقاء</option>
-  <option value="الكرك">الكرك</option>
-  <option value="معان">معان</option>
-  <option value="المفرق">المفرق</option>
-  <option value="الطفيلة">الطفيلة</option>
-  <option value="مادبا">مادبا</option>
-  <option value="جرش">جرش</option>
-  <option value="عجلون">عجلون</option>
-  <option value="العقبة">العقبة</option>
-</select>
+      <label>نوع السيارة</label>
+      <div class="radio-group">
+        <label><input type="radio" name="carType" value="normal" checked> عادي</label>
+        <label><input type="radio" name="carType" value="ladies"> خاص للبنات</label>
+      </div>
 
+      <div class="row" style="margin-top:8px">
+        <div class="half">
+          <label for="fromGov">من المحافظة</label>
+          <select id="fromGov"></select>
+        </div>
+        <div class="half">
+          <label for="fromLoc">من المنطقة</label>
+          <select id="fromLoc"></select>
+        </div>
+      </div>
 
-     <select id="from">
-  <option value="عمان">عمان</option>
-  <option value="الزرقاء">الزرقاء</option>
-  <option value="إربد">إربد</option>
-  <option value="البلقاء">البلقاء</option>
-  <option value="الكرك">الكرك</option>
-  <option value="معان">معان</option>
-  <option value="المفرق">المفرق</option>
-  <option value="الطفيلة">الطفيلة</option>
-  <option value="مادبا">مادبا</option>
-  <option value="جرش">جرش</option>
-  <option value="عجلون">عجلون</option>
-  <option value="العقبة">العقبة</option>
-</select>
+      <div class="row" style="margin-top:10px">
+        <div class="half">
+          <label for="toGov">إلى المحافظة</label>
+          <select id="toGov"></select>
+        </div>
+        <div class="half">
+          <label for="toLoc">إلى المنطقة</label>
+          <select id="toLoc"></select>
+        </div>
+      </div>
 
-      <button type="submit">طلب توصيلة</button>
+      <label for="date">تاريخ الرحلة</label>
+      <input type="date" id="date" required />
+
+      <label for="seats">عدد المقاعد المطلوبة</label>
+      <input type="number" id="seats" min="1" max="6" value="1" />
+
+      <label for="notes">ملاحظات إضافية (مثلاً: وزن الأمانة أو تفاصيل)</label>
+      <input class="input-text" id="notes" placeholder="مثلاً: 2 ركاب أو 5 كغ، أو طلب سيارة خاص للبنات" />
+
+      <button class="btn" id="searchBtn" type="button">ابحث عن رحلات متاحة</button>
     </form>
 
-    <div class="rides" id="ridesList">
-      <!-- سيتم عرض الطلب هنا -->
+    <hr style="margin:18px 0;border:none;border-top:1px solid #eef7f7">
+    <h3 style="margin:0 0 8px">الرحلات المتاحة</h3>
+    <div id="availableRides" class="rides-list">
+      <!-- الرحلات تظهر هنا -->
     </div>
   </div>
 
-  <script>
-    const form = document.getElementById('rideForm');
-    const ridesList = document.getElementById('ridesList');
+  <div>
+    <div class="map-wrap card">
+      <div id="map"></div>
+    </div>
 
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+    <div class="card" style="margin-top:14px">
+      <h3>آخر الرحلات المنشورة</h3>
+      <div id="recentRides" style="margin-top:12px">
+        <!-- آخر الرحلات -->
+      </div>
+    </div>
+  </div>
+</div>
 
-      const type = document.querySelector('input[name="type"]:checked').value;
-      const from = document.getElementById('from').value;
-      const to = document.getElementById('to').value;
+<footer>
+  © غيث هاب — تجربة تجريبية. البيانات تحفظ محليًا أثناء التطوير.
+</footer>
 
-      if (from === to) {
-        alert("لا يمكن اختيار نفس المدينة كنقطة انطلاق ووجهة.");
-        return;
-      }
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 id="authTitle">تسجيل الدخول</h3>
+      <button id="closeModal" style="background:none;border:none;font-weight:700;cursor:pointer">×</button>
+    </div>
 
-      const ride = document.createElement('div');
-      ride.className = 'ride-card';
-      ride.innerHTML = `
-        <strong>نوع التوصيل:</strong> ${type === 'person' ? 'شخص' : 'أمانة'}<br>
-        <strong>من:</strong> ${from}<br>
-        <strong>إلى:</strong> ${to}<br>
-        <em>تم إرسال الطلب بنجاح!</em>
-      `;
+    <div id="authForms">
+      <div id="loginForm">
+        <div class="field">
+          <label>البريد أو الهاتف</label>
+          <input id="loginId" class="input-text" placeholder="example@mail.com أو 07xxxxxxxx" />
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input id="loginPass" type="password" class="input-text" />
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn" id="doLogin">دخول</button>
+          <button class="btn secondary" id="showRegister" style="margin-top:8px">إنشاء حساب جديد</button>
+        </div>
+      </div>
 
-      ridesList.prepend(ride);
+      <div id="registerForm" style="display:none">
+        <div class="field">
+          <label>الاسم الكامل</label>
+          <input id="regName" class="input-text" />
+        </div>
+        <div class="field">
+          <label>البريد أو الهاتف</label>
+          <input id="regId" class="input-text" />
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input id="regPass" type="password" class="input-text" />
+        </div>
+        <div style="margin-top:10px">
+          <button class="btn" id="doRegister">تسجيل</button>
+          <button class="btn secondary" id="showLogin" style="margin-top:8px">لدي حساب بالفعل</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="small" style="margin-top:12px">المعلومات تخزن محليًا فقط للاختبار. لبيئة حقيقية يجب ربط باكند آمن.</p>
+  </div>
+</div>
+
+<script>
+/* البيانات -- عمان و الكرك بالمناطق مع إحداثيات تقريبية */
+const GOVS = {
+  "عمان": [
+    {name:"وسط البلد", lat:31.9554, lng:35.9450},
+    {name:"عبدون", lat:31.9429, lng:35.8650},
+    {name:"الجبيهة", lat:31.9636, lng:35.8889},
+    {name:"ماركا", lat:32.0000, lng:35.9633},
+    {name:"الشميساني", lat:31.9458, lng:35.9008},
+    {name:"أبو نصير", lat:32.0, lng:35.87},
+    {name:"الراشدية", lat:32.0033, lng:35.9197},
+    {name:"خريبة السوق", lat:31.95, lng:35.92}
+    // أضف المزيد إذا تريد
+  ],
+  "الكرك": [
+    {name:"مدينة الكرك", lat:31.1839, lng:35.7019},
+    {name:"الطيبة", lat:31.2100, lng:35.7400},
+    {name:"مؤتة", lat:31.2067, lng:35.6800},
+    {name:"قرى الخريشا", lat:31.1400, lng:35.6300},
+    {name:"مؤاب ", lat:31.1839, lng:35.7019},
+    {name:"مرود", lat:31.1839, lng:35.7019},
+    {name:"عين الباشا (جزء من البلقاء)" , lat:31.95, lng:35.78} // مثال إذا تحب مناطق خارجية
+    // أضف المزيد إذا تريد
+  ]
+};
+
+/* رحلات وهمية */
+const FAKE_RIDES = [
+  {id:1, driver:"سائق أحمد", fromGov:"الكرك", fromLoc:"مدينة الكرك", toGov:"عمان", toLoc:"وسط البلد", date:offsetDate(1), time:"09:00", price:14, seats:3, carType:"normal"},
+  {id:2, driver:"سائق محمد", fromGov:"عمان", fromLoc:"الجبيهة", toGov:"الكرك", toLoc:"قصر السلالمة", date:offsetDate(2), time:"14:30", price:18, seats:2, carType:"ladies"},
+  {id:3, driver:"سائقة ليلى", fromGov:"الكرك", fromLoc:"يدين", toGov:"عمان", toLoc:"عبدون", date:offsetDate(0), time:"11:00", price:16, seats:4, carType:"normal"},
+  {id:4, driver:"سائق كريم", fromGov:"عمان", fromLoc:"ماركا", toGov:"الكرك", toLoc:"نقل", date:offsetDate(3), time:"08:00", price:20, seats:3, carType:"ladies"}
+];
+
+/* مساعد لتنسيق التاريخ */
+function offsetDate(offsetDays){
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const y=d.getFullYear(),m=('0'+(d.getMonth()+1)).slice(-2),day=('0'+d.getDate()).slice(-2);
+  return `${y}-${m}-${day}`;
+}
+
+/* DOM العناصر */
+const fromGovSel = document.getElementById('fromGov');
+const fromLocSel = document.getElementById('fromLoc');
+const toGovSel = document.getElementById('toGov');
+const toLocSel = document.getElementById('toLoc');
+const dateInput = document.getElementById('date');
+const seatsInput = document.getElementById('seats');
+const searchBtn = document.getElementById('searchBtn');
+const availableRides = document.getElementById('availableRides');
+const recentRides = document.getElementById('recentRides');
+
+/* auth عناصر */
+const openAuthBtn = document.getElementById('openAuthBtn');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const closeModal = document.getElementById('closeModal');
+const loginFormDiv = document.getElementById('loginForm');
+const registerFormDiv = document.getElementById('registerForm');
+const showRegister = document.getElementById('showRegister');
+const showLogin = document.getElementById('showLogin');
+const doLogin = document.getElementById('doLogin');
+const doRegister = document.getElementById('doRegister');
+
+/* تهيئة القوائم */
+function populateGovs(){
+  const govs = Object.keys(GOVS);
+  [fromGovSel,toGovSel].forEach(sel=>{
+    sel.innerHTML = govs.map(g=>`<option value="${g}">${g}</option>`).join('');
+  });
+}
+
+function populateLoc(selGov, selLoc){
+  const gov = selGov.value;
+  const areas = GOVS[gov] || [];
+  selLoc.innerHTML = areas.map(a=>`<option value="${a.name}">${a.name}</option>`).join('');
+}
+
+fromGovSel.addEventListener('change', ()=> { populateLoc(fromGovSel, fromLocSel); });
+toGovSel.addEventListener('change', ()=> { populateLoc(toGovSel, toLocSel); });
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  populateGovs();
+  populateLoc(fromGovSel, fromLocSel);
+  populateLoc(toGovSel, toLocSel);
+  dateInput.value = offsetDate(0);
+  renderRecent();
+});
+
+/* auth محلي */
+const STORAGE_USERS = 'ghith_users';
+const STORAGE_SESSION = 'ghith_session';
+
+function getUsers(){ try{ return JSON.parse(localStorage.getItem(STORAGE_USERS))||[] }catch(e){return[]} }
+function saveUsers(u){ localStorage.setItem(STORAGE_USERS, JSON.stringify(u)) }
+
+function currentUser(){ return JSON.parse(localStorage.getItem(STORAGE_SESSION)) }
+
+function setSession(user){ localStorage.setItem(STORAGE_SESSION, JSON.stringify(user)); updateAuthUI(); }
+function clearSession(){ localStorage.removeItem(STORAGE_SESSION); updateAuthUI(); }
+
+function updateAuthUI(){
+  const user = currentUser();
+  if(user){
+    openAuthBtn.textContent = `مرحباً ${user.name || user.id} — تسجيل خروج`;
+    openAuthBtn.onclick = ()=>{ if(confirm('تسجيل خروج؟')){ clearSession(); } };
+  } else {
+    openAuthBtn.textContent = `تسجيل / تسجيل دخول`;
+    openAuthBtn.onclick = ()=>{ modalBackdrop.style.display='flex'; showLoginForm(); };
+  }
+}
+
+openAuthBtn.addEventListener('click', ()=>{ modalBackdrop.style.display='flex'; showLoginForm(); });
+closeModal.addEventListener('click', ()=> modalBackdrop.style.display='none');
+modalBackdrop.addEventListener('click', (e)=>{ if(e.target===modalBackdrop) modalBackdrop.style.display='none' });
+
+showRegister.addEventListener('click', ()=> showRegisterForm());
+showLogin.addEventListener('click', ()=> showLoginForm());
+
+function showLoginForm(){ loginFormDiv.style.display='block'; registerFormDiv.style.display='none'; document.getElementById('authTitle').textContent='تسجيل الدخول' }
+function showRegisterForm(){ loginFormDiv.style.display='none'; registerFormDiv.style.display='block'; document.getElementById('authTitle').textContent='إنشاء حساب' }
+
+doRegister.addEventListener('click', ()=>{
+  const name = document.getElementById('regName').value.trim();
+  const id = document.getElementById('regId').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if(!name||!id||!pass){ alert('املأ جميع الحقول'); return; }
+  let users = getUsers();
+  if(users.find(u=>u.id===id)){ alert('المستخدم موجود بالفعل'); return; }
+  users.push({name, id, pass});
+  saveUsers(users);
+  setSession({name,id});
+  alert('تم إنشاء الحساب وتسجيل الدخول');
+  modalBackdrop.style.display='none';
+});
+
+doLogin.addEventListener('click', ()=>{
+  const id = document.getElementById('loginId').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if(!id||!pass){ alert('املأ البريد/الهاتف وكلمة المرور'); return; }
+  let users = getUsers();
+  const user = users.find(u=>u.id===id && u.pass===pass);
+  if(!user){ alert('بيانات غير صحيحة'); return; }
+  setSession({name:user.name, id:user.id});
+  alert('تم تسجيل الدخول');
+  modalBackdrop.style.display='none';
+});
+
+/* عرض رحلات سابقة */
+function renderRecent(){
+  recentRides.innerHTML = FAKE_RIDES.slice(0,4).map(r=>{
+    return `<div class="ride">
+      <div class="info">
+        <b>${r.fromGov} (${r.fromLoc}) → ${r.toGov} (${r.toLoc})</b>
+        <small>${r.driver} • ${r.date} • ${r.time}</small>
+      </div>
+      <div class="meta">
+        <div class="pill">${r.price} د.أ</div>
+        <div style="margin-top:8px;font-size:0.9rem;color:#055">${r.seats} مقاعد</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* البحث مع فلترة تشمل carType وعدد المقاعد */
+searchBtn.addEventListener('click', ()=>{
+  const fromGov = fromGovSel.value;
+  const fromLoc = fromLocSel.value;
+  const toGov = toGovSel.value;
+  const toLoc = toLocSel.value;
+  const date = dateInput.value;
+  const seatsReq = Number(seatsInput.value) || 1;
+  const carTypeReq = document.querySelector('input[name="carType"]:checked').value;
+
+  if(fromGov === toGov && fromLoc === toLoc){
+    alert('اختار محافظة ومنطقة مختلفة للانطلاق والوجهة');
+    return;
+  }
+  const results = FAKE_RIDES.filter(r=>{
+    return r.fromGov === fromGov &&
+           r.fromLoc === fromLoc &&
+           r.toGov === toGov &&
+           r.toLoc === toLoc &&
+           r.date === date &&
+           r.seats >= seatsReq &&
+           (carTypeReq === 'normal' || (carTypeReq === 'ladies' && r.carType === 'ladies'))
+  });
+  renderAvailable(results);
+  setRouteOnMap(fromGov, fromLoc, toGov, toLoc);
+});
+
+function renderAvailable(arr){
+  if(!arr || arr.length===0){
+    availableRides.innerHTML = `<div class="small">لا توجد رحلات متاحة حسب المعايير.</div>`;
+    return;
+  }
+  availableRides.innerHTML = arr.map(r=>{
+    const carTypeLabel = r.carType === 'ladies' ? 'خاص للبنات' : 'عادي';
+    return `<div class="ride" data-id="${r.id}">
+      <div class="info">
+        <b>${r.fromGov} (${r.fromLoc}) → ${r.toGov} (${r.toLoc})</b>
+        <small>${r.driver} • ${r.date} • ${r.time} • نوع السيارة: ${carTypeLabel}</small>
+      </div>
+      <div class="meta">
+        <div class="pill">${r.price} د.أ</div>
+        <div style="margin-top:8px">
+          <button class="btn secondary bookBtn" data-id="${r.id}">احجز (${r.seats} مقاعد متاحة)</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.bookBtn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const rideId = Number(b.dataset.id);
+      handleBooking(rideId);
     });
-  </script>
+  });
+}
+
+function handleBooking(rideId){
+  const user = JSON.parse(localStorage.getItem('ghith_session'));
+  if(!user){
+    if(confirm('يجب تسجيل الدخول للحجز. هل تريد تسجيل الدخول الآن؟')){
+      modalBackdrop.style.display='flex';
+      showLoginForm();
+    }
+    return;
+  }
+  const ride = FAKE_RIDES.find(r=>r.id===rideId);
+  if(!ride){ alert('الرحلة غير موجودة'); return; }
+  const bookings = JSON.parse(localStorage.getItem('ghith_bookings')||'[]');
+  bookings.push({rideId, userId:user.id, when: new Date().toISOString(), ride});
+  localStorage.setItem('ghith_bookings', JSON.stringify(bookings));
+  alert(`تم حجز الرحلة مع ${ride.driver} بتاريخ ${ride.date} الساعة ${ride.time} — نوع السيارة: ${ride.carType === 'ladies' ? 'خاص للبنات' : 'عادي'}`);
+}
+
+/* خريطة */
+let map, markers=[], polyline;
+function initMap(){
+  map = new google.maps.Map(document.getElementById('map'), {
+    center:{lat:31.5, lng:36.0},
+    zoom:8
+  });
+}
+
+function setRouteOnMap(fromGov, fromLoc, toGov, toLoc){
+  if(!map) return;
+  markers.forEach(m=>m.setMap(null));
+  markers=[];
+  if(polyline){ polyline.setMap(null); polyline=null; }
+
+  const fromArea = GOVS[fromGov].find(a=>a.name===fromLoc);
+  const toArea = GOVS[toGov].find(a=>a.name===toLoc);
+  if(!fromArea || !toArea) return;
+
+  const markerA = new google.maps.Marker({position:{lat:fromArea.lat, lng:fromArea.lng}, map, title:fromLoc, label:'A'});
+  const markerB = new google.maps.Marker({position:{lat:toArea.lat, lng:toArea.lng}, map, title:toLoc, label:'B'});
+  markers.push(markerA, markerB);
+
+  polyline = new google.maps.Polyline({
+    path:[{lat:fromArea.lat, lng:fromArea.lng},{lat:toArea.lat, lng:toArea.lng}],
+    geodesic:true,
+    strokeColor:'#00bcd4',
+    strokeOpacity:0.9,
+    strokeWeight:4,
+    map
+  });
+
+  const bounds = new google.maps.LatLngBounds();
+  bounds.extend(markerA.getPosition());
+  bounds.extend(markerB.getPosition());
+  map.fitBounds(bounds, 60);
+}
+
+</script>
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap"></script>
+
 </body>
 </html>
