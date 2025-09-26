@@ -1,90 +1,140 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>توصيلة - المواصلات</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>غيث هاب - توصيل من الكرك إلى عمّان والعقبة</title>
   <style>
     body {
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
+      background: #f1f1f1;
       margin: 0;
       padding: 0;
-      background-color: #f0f0f0; /* رمادي فاتح */
-      color: #333;
     }
 
     header {
-      background-color: #003366; /* كحلي */
+      background: #007B8A;
       color: white;
       padding: 20px;
       text-align: center;
-    }
-
-    nav {
-      background-color: #002244; /* كحلي غامق */
-      padding: 10px;
-      text-align: center;
-    }
-
-    nav a {
- color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
     }
 
     .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
       padding: 20px;
-    }
-
-    .trip-card {
-      background-color: #003366; /* كحلي */
-      color: white;
       border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    .trip-card:hover {
-      transform: scale(1.02);
+    label {
+      display: block;
+      margin: 10px 0 5px;
     }
 
-    .trip-card h3 {
-      margin-top: 0;
-      font-size: 1.4em;
+    select, input[type="radio"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      font-size: 1rem;
     }
 
-    .trip-card p {
-      margin: 8px 0;
-      font-size: 1em;
+    .radio-group {
+      display: flex;
+      gap: 20px;
     }
-    .trip-card button {
-      background-color: white;
-      color: #003366;
+
+    button {
+      background: #007B8A;
+      color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1rem;
       border-radius: 5px;
-      font-weight: bold;
       cursor: pointer;
     }
 
-    .trip-card button:hover {
-      background-color: #e0e0e0;
-    }
-
-    footer {
-      background-color: #003366;
-      color: white;
-      text-align: center;
-      padding: 15px;
+    .rides {
       margin-top: 30px;
     }
+
+    .ride-card {
+      background: #f9f9f9;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
   </style>
 </head>
 <body>
 
   <header>
-    <h1>🚐 غيث هاب</h1>
-    <p>تطبيق المواصلات بين الكرك، عمان، وال
+    <h1>غيث هاب - GhithHub</h1>
+    <p>توصيل أشخاص وأمانات بين الكرك، عمان، والعقبة</p>
+  </header>
+
+  <div class="container">
+    <form id="rideForm">
+      <label>نوع التوصيل:</label>
+      <div class="radio-group">
+        <label><input type="radio" name="type" value="person" checked> شخص</label>
+        <label><input type="radio" name="type" value="package"> أمانة</label>
+      </div>
+
+      <label for="from">من المدينة:</label>
+      <select id="from">
+        <option value="الكرك">الكرك</option>
+        <option value="عمان">عمان</option>
+        <option value="العقبة">العقبة</option>
+      </select>
+
+      <label for="to">إلى المدينة:</label>
+      <select id="to">
+        <option value="عمان">عمان</option>
+        <option value="الكرك">الكرك</option>
+        <option value="العقبة">العقبة</option>
+      </select>
+
+      <button type="submit">طلب توصيلة</button>
+    </form>
+
+    <div class="rides" id="ridesList">
+      <!-- سيتم عرض الطلب هنا -->
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('rideForm');
+    const ridesList = document.getElementById('ridesList');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const from = document.getElementById('from').value;
+      const to = document.getElementById('to').value;
+
+      if (from === to) {
+        alert("لا يمكن اختيار نفس المدينة كنقطة انطلاق ووجهة.");
+        return;
+      }
+
+      const ride = document.createElement('div');
+      ride.className = 'ride-card';
+      ride.innerHTML = `
+        <strong>نوع التوصيل:</strong> ${type === 'person' ? 'شخص' : 'أمانة'}<br>
+        <strong>من:</strong> ${from}<br>
+        <strong>إلى:</strong> ${to}<br>
+        <em>تم إرسال الطلب بنجاح!</em>
+      `;
+
+      ridesList.prepend(ride);
+    });
+  </script>
+</body>
+</html>
+
